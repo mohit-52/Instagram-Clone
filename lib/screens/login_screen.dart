@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:instagram_flutter/resources/auth_methods.dart';
+import 'package:instagram_flutter/screens/signup_screen.dart';
 import 'package:instagram_flutter/utils/colors.dart';
+import 'package:instagram_flutter/utils/utils.dart';
 import 'package:instagram_flutter/widgets/text_field_input.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -13,11 +16,32 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passController = TextEditingController();
+  bool isLoading = false;
 
   @override
   void dispose() {
     _emailController.dispose();
     _passController.dispose();
+  }
+
+  void loginUser() async {
+    setState(() {
+      isLoading = true;
+    });
+    String res = await AuthMethods().signinUser(password: _passController.text,email: _emailController.text);
+
+    if(res == 'success'){
+      showSnackbar("Success", context);
+      setState(() {
+        isLoading = false;
+      });
+    }else{
+      showSnackbar("Failed Login", context);
+      setState(() {
+        isLoading = false;
+      });
+
+    }
   }
 
   @override
@@ -66,7 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
               // LOGIN BUTTON
               InkWell(
-                onTap: (){},
+                onTap: loginUser,
                 child: Container(
                   width: double.infinity,
                   alignment: Alignment.center,
@@ -74,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(4)),
                       color: blueColor),
-                  child: Center(
+                  child: isLoading ? CircularProgressIndicator(color:  primaryColor,):Center(
                     child: Text('LOG IN'),
                   ),
                 ),
@@ -98,7 +122,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: (){},
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=> SignupScreen()));
+                    },
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 8),
                       child: Center(

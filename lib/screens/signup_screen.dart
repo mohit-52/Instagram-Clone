@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:instagram_flutter/screens/login_screen.dart';
 
 import '../resources/auth_methods.dart';
 import '../utils/colors.dart';
@@ -71,6 +72,7 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 32),
@@ -188,7 +190,10 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=> LoginScreen()));
+
+                    },
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 8),
                       child: Center(
