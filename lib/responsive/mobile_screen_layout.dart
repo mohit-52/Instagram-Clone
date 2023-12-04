@@ -1,7 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_flutter/models/user.dart' as model;
+import 'package:instagram_flutter/utils/colors.dart';
 import 'package:provider/provider.dart';
 import 'package:instagram_flutter/providers/user_provider.dart';
 
@@ -13,32 +13,65 @@ class MobileScreenLayout extends StatefulWidget {
 }
 
 class _MobileScreenLayoutState extends State<MobileScreenLayout> {
-  String username = "";
+  int _page = 0;
+  late PageController pageController;
 
   @override
   void initState() {
     super.initState();
-    getUserName();
+    pageController = PageController();
   }
 
-  void getUserName() async {
-    DocumentSnapshot snap = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .get();
+
+  @override
+  void dispose() {
+    super.dispose();
+    pageController.dispose();
+  }
+
+  void navigationTapped(int page){
+    pageController.jumpToPage(page);
+  }
+
+  void onPageChanged(int page){
     setState(() {
-      username = (snap.data() as Map<String, dynamic>)['username'];
+      _page = page;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    model.User user = Provider.of<UserProvider>(context).getUser;
+    // model.User user = Provider.of<UserProvider>(context).getUser;
     return Scaffold(
-      body: Center(
-          child: Text(
-        user.username,
-      )),
+      body: PageView(
+        children: [
+          Text("Feed"),
+          Text("Search"),
+          Text("Add"),
+          Text("Notifications"),
+          Text("Profile"),
+        ],
+        controller: pageController,
+        onPageChanged: onPageChanged,
+        physics: ScrollPhysics(),
+      ),
+      bottomNavigationBar: CupertinoTabBar(
+        backgroundColor: mobileBackgroundColor,
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.home,
+          color: _page==0 ? primaryColor : secondaryColor,), label: 'Home', backgroundColor: primaryColor,),
+          BottomNavigationBarItem(icon: Icon(Icons.search,
+            color: _page==1 ? primaryColor : secondaryColor,), label: 'Search', backgroundColor: primaryColor,),
+          BottomNavigationBarItem(icon: Icon(Icons.add_circle,
+            color: _page==2 ? primaryColor : secondaryColor,), label: 'Add', backgroundColor: primaryColor,),
+          BottomNavigationBarItem(icon: Icon(Icons.favorite,
+            color: _page==3 ? primaryColor : secondaryColor,), label: 'Notifications', backgroundColor: primaryColor,),
+          BottomNavigationBarItem(icon: Icon(Icons.person,
+            color: _page==4 ? primaryColor : secondaryColor,), label: 'Profile', backgroundColor: primaryColor,),
+
+        ],
+        onTap: navigationTapped,
+      ),
     );
   }
 }
