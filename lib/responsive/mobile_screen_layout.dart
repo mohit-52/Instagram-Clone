@@ -53,7 +53,7 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
         ],
         controller: pageController,
         onPageChanged: onPageChanged,
-        physics: ScrollPhysics(),
+        physics: NeverScrollableScrollPhysics(),
       ),
       bottomNavigationBar: CupertinoTabBar(
         backgroundColor: mobileBackgroundColor,
